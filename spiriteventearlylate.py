@@ -17,7 +17,7 @@ image_path_startercards = r'C:\ImagesForMacro\StarterCards.png'
 image_path_additivecards = r'C:\ImagesForMacro\AdditiveCards.png'
 image_path_desired = r'C:\ImagesForMacro\Desired.png'
 image_path_wave1 = r'C:\ImagesForMacro\Wave1.png'
-image_path_wave27 = r'C:\ImagesForMacro\Wave27.png'
+image_path_wave28 = r'C:\ImagesForMacro\Wave28.png'
 harvest = r'C:\ImagesForMacro\Harvest.png'
 loot = r'C:\ImagesForMacro\Loot.png'
 commonloot = r'C:\ImagesForMacro\CommonLoot.png'
@@ -131,7 +131,7 @@ while flag_var:
                 print("Starter Cards not detected")
                 time.sleep(0.1)
 
-            #Detects wave1 / wave27 and switches between early and late array accordingly
+            #Detects wave1 / wave28 and switches between early and late array accordingly
             try:
                 locationwave1 = pyautogui.locateOnScreen(image_path_wave1, confidence=0.8)
                 flag_var2 = True #if wave1 is detected, early array is used (prob will also detect wave10-19 but should be fine)
@@ -139,8 +139,8 @@ while flag_var:
                 #nothing
 
             try:
-                locationwave27 = pyautogui.locateOnScreen(image_path_wave27, confidence=0.8)
-                flag_var2 = False #if wave27 is detected, late array is used
+                locationwave28 = pyautogui.locateOnScreen(image_path_wave28, confidence=0.8)
+                flag_var2 = False #if wave28 is detected, late array is used
             except:
                 #nothing
 
