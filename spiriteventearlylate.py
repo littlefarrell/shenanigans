@@ -31,8 +31,8 @@ press = r'C:\ImagesForMacro\Press.png'
 champions = r'C:\ImagesForMacro\Champions.png'
 precise = r'C:\ImagesForMacro\Precise.png'
 # Change the order of the cards to match your desired priority
-arrayearly = [harvest, loot, commonloot, damage, range, cooldown, slayer, strong, dodge, press, champions, precise]
-arraylate = [harvest, loot, commonloot, dodge, damage, strong, range, cooldown, slayer, press, champions, precise]
+arrayearly = [harvest, loot, commonloot, damage, cooldown, slayer, range, strong, champions, dodge, press, precise]
+arraylate = [harvest, loot, commonloot, champions, damage, strong, cooldown, slayer, dodge, range, press, precise]
 
 def move_mouse_relative(dx, dy):
     """
