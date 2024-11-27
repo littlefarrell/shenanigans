@@ -31,16 +31,10 @@ press = r'C:\ImagesForMacro\Press.png'
 champions = r'C:\ImagesForMacro\Champions.png'
 precise = r'C:\ImagesForMacro\Precise.png'
 # Change the order of the cards to match your desired priority
-arrayearly = [harvest, loot, commonloot, damage, cooldown, slayer, range, strong, champions, dodge, press, precise]
-arraylate = [harvest, loot, commonloot, champions, damage, strong, cooldown, slayer, dodge, range, press, precise]
+arrayearly = [harvest, loot, commonloot, damage, range, cooldown, slayer, strong, dodge, press, champions, precise]
+arraylate = [harvest, dodge, strong, champions, loot, commonloot, damage, range, cooldown, slayer, press, precise]
 
 def move_mouse_relative(dx, dy):
-    """
-    Move the mouse cursor relatively from its current position.
-    
-    :param dx: Distance to move horizontally (positive for right, negative for left).
-    :param dy: Distance to move vertically (positive for down, negative for up).
-    """
     win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
 
 def killswitch():
@@ -55,7 +49,7 @@ def killswitch():
 thread = threading.Thread(target=killswitch)  # Create a thread
 thread.start()  # Start the thread
 
-time.sleep(0.1)
+time.sleep(0.05)
 print("Script Started: press ; to start the script, and m to stop it")
 
 while flag_var:
@@ -80,9 +74,9 @@ while flag_var:
 
                     #Start Macro
                     pyautogui.keyDown('f8')
-                    time.sleep(0.1)
+                    time.sleep(0.09)
                     pyautogui.keyUp('f8')
-                    time.sleep(0.1)
+                    time.sleep(0.01)
 
                 except:
                     #This part will open settings and restart stage if wrong card chosen
@@ -128,23 +122,27 @@ while flag_var:
                     time.sleep(0.1)
 
             except:
-                print("Starter Cards not detected")
-                time.sleep(0.1)
+                #print("Starter Cards not detected")
+                time.sleep(0.01)
 
             #Detects wave1 / wave28 and switches between early and late array accordingly
             try:
-                locationwave1 = pyautogui.locateOnScreen(image_path_wave1, confidence=0.8)
+                locationwave1 = pyautogui.locateOnScreen(image_path_wave1, confidence=0.9)
                 flag_var2 = True #if wave1 is detected, early array is used (prob will also detect wave10-19 but should be fine)
+                #print("wave 1 detected")
+                time.sleep(0.01)
             except:
-                print("ignore this message")
-                time.sleep(5)
+                #print("wave 1 not detected")
+                time.sleep(0.01)
 
             try:
-                locationwave28 = pyautogui.locateOnScreen(image_path_wave28, confidence=0.8)
+                locationwave28 = pyautogui.locateOnScreen(image_path_wave28, confidence=0.9)
                 flag_var2 = False #if wave28 is detected, late array is used
+                #print("wave 28 detected")
+                time.sleep(0.01)
             except:
-                print("ignore this message")
-                time.sleep(5)
+                #print("wave 28 not detected")
+                time.sleep(0.01)
 
             #AdditiveCards  
             try:
@@ -189,8 +187,8 @@ while flag_var:
                         if x > 11:
                             break
             except:
-                print("Additive Cards not detected")
-                time.sleep(0.1)     
+                #print("Additive Cards not detected")
+                time.sleep(0.01)     
 
             #Retry upon victory / loss
             pixel_color = pyautogui.screenshot().getpixel(target_pos)
@@ -202,9 +200,9 @@ while flag_var:
                 if elapsed_time >= time_lim:
                     #turn off macro
                     pyautogui.keyDown('f8')
-                    time.sleep(0.1)
+                    time.sleep(0.09)
                     pyautogui.keyUp('f8')
-                    time.sleep(0.1)
+                    time.sleep(0.01)
 
                     #retry
                     locationretry = (1170, 820)
