@@ -136,7 +136,7 @@ while flag_var:
                 time.sleep(0.01)
 
             try:
-                locationwave28 = pyautogui.locateOnScreen(image_path_wave28, confidence=0.9)
+                locationwave28 = pyautogui.locateOnScreen(image_path_wave28, confidence=0.95)
                 flag_var2 = False #if wave28 is detected, late array is used
                 #print("wave 28 detected")
                 time.sleep(0.01)
