@@ -12,7 +12,7 @@ flag_var = True
 flag_var2 = True
 target_pos = (633, 568)
 target_col = (232, 208, 0)
-time_lim = 8
+time_lim = 5
 image_path_startercards = r'C:\ImagesForMacro\StarterCards.png'
 image_path_additivecards = r'C:\ImagesForMacro\AdditiveCards.png'
 image_path_desired = r'C:\ImagesForMacro\Desired.png'
@@ -31,8 +31,8 @@ press = r'C:\ImagesForMacro\Press.png'
 champions = r'C:\ImagesForMacro\Champions.png'
 precise = r'C:\ImagesForMacro\Precise.png'
 # Change the order of the cards to match your desired priority
-arrayearly = [harvest, loot, commonloot, damage, range, cooldown, slayer, strong, dodge, press, champions, precise]
-arraylate = [harvest, dodge, strong, champions, loot, commonloot, damage, range, cooldown, slayer, press, precise]
+arrayearly = [harvest, loot, commonloot, damage, range, cooldown, slayer, champions, dodge, strong, press, precise]
+arraylate = [harvest, champions, dodge, loot, commonloot, damage, range, cooldown, slayer, strong, press, precise]
 
 def move_mouse_relative(dx, dy):
     win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
@@ -71,12 +71,14 @@ while flag_var:
                     pyautogui.moveTo(locationdesired)
                     move_mouse_relative(0, 1)
                     pyautogui.click()
+                    print("Desired card found")
 
                     #Start Macro
                     pyautogui.keyDown('f8')
                     time.sleep(0.09)
                     pyautogui.keyUp('f8')
                     time.sleep(0.01)
+                    print("Macro Started")
 
                 except:
                     #This part will open settings and restart stage if wrong card chosen
@@ -148,7 +150,7 @@ while flag_var:
             try:
                 #look for additive cards
                 locationadditivecards = pyautogui.locateOnScreen(image_path_additivecards, confidence=0.8)
-                time.sleep(0.2)
+                time.sleep(0.05)
                 x = 0
                 if flag_var2: #flag_var2 = true means early array is used
                     while True:
@@ -160,11 +162,11 @@ while flag_var:
                             pyautogui.moveTo(locationtemp)
                             move_mouse_relative(0, 1)
                             pyautogui.click()
-                            time.sleep(0.01)
+                            time.sleep(0.001)
                             break
                         except:
                             print("Not found")
-                            time.sleep(0.01)
+                            time.sleep(0.001)
                         x += 1
                         if x > 11:
                             break
@@ -178,11 +180,11 @@ while flag_var:
                             pyautogui.moveTo(locationtemp)
                             move_mouse_relative(0, 1)
                             pyautogui.click()
-                            time.sleep(0.01)
+                            time.sleep(0.001)
                             break
                         except:
                             print("Not found")
-                            time.sleep(0.01)
+                            time.sleep(0.001)
                         x += 1
                         if x > 11:
                             break
@@ -200,9 +202,10 @@ while flag_var:
                 if elapsed_time >= time_lim:
                     #turn off macro
                     pyautogui.keyDown('f8')
-                    time.sleep(0.09)
+                    time.sleep(0.1)
                     pyautogui.keyUp('f8')
-                    time.sleep(0.01)
+                    time.sleep(0.05)
+                    print("Rewards detected, macro stopped")
 
                     #retry
                     locationretry = (1170, 820)
@@ -210,3 +213,4 @@ while flag_var:
                     move_mouse_relative(0, 1)
                     pyautogui.click()
                     time.sleep(0.05)
+                    print("Run restarted")
