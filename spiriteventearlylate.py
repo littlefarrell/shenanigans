@@ -10,11 +10,15 @@ import win32con
 loop_running = False
 flag_var = True
 flag_var2 = True
+retry_flag = False
 target_pos = (633, 568)
 target_col = (232, 208, 0)
+alternative_pos = (621, 567)
+alternative_col = (231, 212, 0)
 time_lim = 5
 image_path_startercards = r'C:\ImagesForMacro\StarterCards.png'
 image_path_additivecards = r'C:\ImagesForMacro\AdditiveCards.png'
+image_path_endwisp = r'C:\ImagesForMacro\EndWisp.png'
 image_path_desired = r'C:\ImagesForMacro\Desired.png'
 image_path_wave1 = r'C:\ImagesForMacro\Wave1.png'
 image_path_wave28 = r'C:\ImagesForMacro\Wave28.png'
@@ -194,7 +198,21 @@ while flag_var:
 
             #Retry upon victory / loss
             pixel_color = pyautogui.screenshot().getpixel(target_pos)
-            if pixel_color == target_col:
+            alternative_pixel_color = pyautogui.screenshot().getpixel(alternative_pos)
+
+            try: #Detects end wisp and clicks twice then starts retry code segment
+                locationendwisp = pyautogui.locateOnScreen(image_path_endwisp, confidence=0.8)
+                pyautogui.moveTo(960,580)
+                move_mouse_relative(0, 1)
+                pyautogui.click()
+                time.sleep(0.05)
+                pyautogui.click()
+                time.sleep(0.05)
+                retry_flag = True
+            except:
+                time.sleep(0.001)
+
+            if pixel_color == target_col or alternative_pixel_color == alternative_col or retry_flag:
                 if not start_time:
                     start_time = time.time()
 
@@ -208,9 +226,16 @@ while flag_var:
                     print("Rewards detected, macro stopped")
 
                     #retry
+                    locationcancel = (960, 580)
+                    pyautogui.moveTo(locationcancel)
+                    move_mouse_relative(0, 1)
+                    pyautogui.click()
+                    time.sleep(0.05)
+
                     locationretry = (1170, 820)
                     pyautogui.moveTo(locationretry)
                     move_mouse_relative(0, 1)
                     pyautogui.click()
                     time.sleep(0.05)
                     print("Run restarted")
+                    retry_flag = False
