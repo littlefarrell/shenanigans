@@ -22,6 +22,7 @@ image_path_endwisp = r'C:\ImagesForMacro\EndWisp.png'
 image_path_desired = r'C:\ImagesForMacro\Desired.png'
 image_path_wave1 = r'C:\ImagesForMacro\Wave1.png'
 image_path_wave28 = r'C:\ImagesForMacro\Wave28.png'
+image_path_ability = r'C:\ImagesForMacro\Ability.png'
 harvest = r'C:\ImagesForMacro\Harvest.png'
 loot = r'C:\ImagesForMacro\Loot.png'
 commonloot = r'C:\ImagesForMacro\CommonLoot.png'
@@ -209,6 +210,19 @@ while flag_var:
                 pyautogui.click()
                 time.sleep(0.05)
                 retry_flag = True
+            except:
+                time.sleep(0.001)
+                
+             try: #Detects if gojo messed up the macro -_-
+                locationabilitycancel = pyautogui.locateOnScreen(image_path_ability, confidence=0.8)
+                time.sleep(2.5)
+                pyautogui.moveTo(955, 578)
+                move_mouse_relative(0,1)
+                pyautogui.click()
+                time.sleep(0.05)
+                pyautogui.click()
+                time.sleep(0.05)
+                retryflag = True
             except:
                 time.sleep(0.001)
 
