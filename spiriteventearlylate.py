@@ -213,7 +213,7 @@ while flag_var:
             except:
                 time.sleep(0.001)
                 
-             try: #Detects if gojo messed up the macro -_-
+            try: #Detects if gojo messed up the macro -_-
                 locationabilitycancel = pyautogui.locateOnScreen(image_path_ability, confidence=0.8)
                 time.sleep(2.5)
                 pyautogui.moveTo(955, 578)
