@@ -23,6 +23,7 @@ image_path_desired = r'C:\ImagesForMacro\Desired.png'
 image_path_wave1 = r'C:\ImagesForMacro\Wave1.png'
 image_path_wave28 = r'C:\ImagesForMacro\Wave28.png'
 image_path_ability = r'C:\ImagesForMacro\Ability.png'
+image_path_settings = r'C:\ImagesForMacro\Settings.png'
 harvest = r'C:\ImagesForMacro\Harvest.png'
 loot = r'C:\ImagesForMacro\Loot.png'
 commonloot = r'C:\ImagesForMacro\CommonLoot.png'
@@ -56,6 +57,8 @@ thread.start()  # Start the thread
 
 time.sleep(0.05)
 print("Script Started: press ; to start the script, and m to stop it")
+
+settings_start_time = None #Fixing a glitch with settings staying open
 
 while flag_var:
     
@@ -225,6 +228,23 @@ while flag_var:
                 retryflag = True
             except:
                 time.sleep(0.001)
+                
+            try: #Detects if somehow the settings got pulled up unwarranted
+                locationsettingscancel = pyautogui.locateOnScreen(image_path_settings, confidence-0.8)
+                if not settings_start_time: #Only triggered if it's 8+ seconds on screen (aka bugged)
+                    settings_start_time = time.time()
+                else:
+                    elapsed_time = time.time() - settings_start_time
+                    if elapsed_time >=8:
+                        print("Settings detected for over 5 seconds. Closing... You might lose this run to refresh the error")
+                        time.sleep(2)
+                        pyautogui.moveTo(1283, 213)
+                        move_mouse_relative(0,1)
+                        pyautogui.click()
+                        time.sleep(0.05)
+                        settings_start_time = None
+            except:
+                    settings_start_time = None
 
             if pixel_color == target_col or alternative_pixel_color == alternative_col or retry_flag:
                 if not start_time:
