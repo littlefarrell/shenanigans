@@ -230,7 +230,7 @@ while flag_var:
                 time.sleep(0.001)
                 
             try: #Detects if somehow the settings got pulled up unwarranted
-                locationsettingscancel = pyautogui.locateOnScreen(image_path_settings, confidence-0.8)
+                locationsettingscancel = pyautogui.locateOnScreen(image_path_settings, confidence=0.8)
                 if not settings_start_time: #Only triggered if it's 8+ seconds on screen (aka bugged)
                     settings_start_time = time.time()
                 else:
