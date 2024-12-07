@@ -1,0 +1,214 @@
+import pyautogui
+import time
+import keyboard
+import win32api
+import win32con
+import threading
+
+# Priorities
+p1 = r"C:\ImagesForMacro\parashielded.png"
+p2 = r"C:\ImagesForMacro\parastrong.png"
+p3 = r"C:\ImagesForMacro\pararegen.png"
+p4 = r"C:\ImagesForMacro\paradrowsy.png"
+p5 = r"C:\ImagesForMacro\paradodge.png"
+
+#Indicator Images
+coins = r"C:\ImagesForMacro\coins.png"
+gems = r"C:\ImagesForMacro\gems.png"
+failed = r"C:\ImagesForMacro\failed.png"
+rewards = r"C:\ImagesForMacro\rewards.png"
+ability = r"C:\ImagesForMacro\Ability.png"
+
+
+# Priority Array
+card_array = [p1, p2, p3, p4, p5]
+
+#Location Variables (for you bomba)
+empty_spot = (1835, 225)
+next_level = (560, 820)
+
+#Other Variables
+loop_running = False
+killswitch_pressed = False
+f8_pressed = False
+flag_var = True
+flag_var2 = False
+flag_var3 = True
+
+#Function definitions
+def move_mouse_relative(dx, dy):
+    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
+
+def killswitch_monitor():
+    global killswitch_pressed
+    global flag_var
+    while True:
+        if keyboard.is_pressed('m'):
+            killswitch_pressed = True
+            flag_var = False
+            print("Killswitch activated. Stopping the script.")
+            break
+        time.sleep(0.1)
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#Main function below
+
+#Killswitch monitoring in a separate thread to avoid conflict
+killswitch_thread = threading.Thread(target=killswitch_monitor)
+killswitch_thread.daemon = True
+killswitch_thread.start()
+
+print("Press ';' to start, and 'm' to exit program.")
+
+#Main Loop
+while flag_var:
+    # Wait for the ';' key to be pressed before starting the loop
+    if keyboard.is_pressed(';') and not loop_running:
+        print("Loop started. Monitoring...")
+        loop_running = True #Logic boolean
+        f8_pressed = False #Tinytask start boolean
+        card_searching = True #Searching card boolean
+    
+    while loop_running:
+        card_found = False  # Flag to track if a card was found and clicked
+        start_time = time.time()  # Start a timer for 4 seconds
+        
+        # Keep searching until 4 seconds of inactivity (no cards found)
+        while card_searching:
+                
+                #Killswitch check
+                if killswitch_pressed:
+                    print("Kill switch. Turning off script")
+                    loop_running = False
+                    break # See I can make a killswitch.... (Took me 5 attempts)
+
+                # Pick prioritized cards
+                x = 0
+                while x < len(card_array):
+
+                    #Second Killswitch for Additive Card loop
+                    if killswitch_pressed:
+                        print("Kill switch. Turning off script")
+                        loop_running = False
+                        break
+                    
+                    # Continuing to pick prioritized cards
+                    print(f"Searching for: {card_array[x]}")
+                    try:
+                        locationtemp = pyautogui.locateOnScreen(card_array[x], confidence=0.8)
+                        if locationtemp:
+                            print("Found")
+                            pyautogui.moveTo(locationtemp)
+                            move_mouse_relative(0, 1)
+                            pyautogui.click()
+                            card_found = True
+                            break
+                    except pyautogui.ImageNotFoundException as e:
+                        print(f"{card_array[x]} not found. {e}")
+
+                    #sleep here so killswitch can actually be pressed between loops
+                    time.sleep(0.1)
+                    x += 1
+
+                if card_found:  # If a card was found, reset the timer and continue searching
+                    print("Card found, continuing search...")
+                    start_time = time.time()  # Reset timer
+                    time.sleep(1.5)
+                    break 
+                else:
+                    print("No card found. Checking again...")
+                    if time.time() - start_time >= 3:  # If 3 seconds have passed with no cards found
+                        if not f8_pressed:
+                            print("3 seconds without cards. Pressing F8...")
+                            time.sleep(0.05)
+                            pyautogui.keyDown('f8')
+                            time.sleep(0.1)
+                            pyautogui.keyUp('f8')
+                            f8_pressed = True
+                        card_searching = False
+                        flag_var3 = True
+                        print("Switching to rewards/loss loop iteration")
+                        break  # Exit the loop to press F8
+
+        if card_searching == False:
+            if flag_var3:
+                print("Victory/Loss search started")
+                flag_var3 = False
+
+            #Check for gems or coins
+            try:
+                locationgems = pyautogui.locateOnScreen(gems, confidence=0.8)
+                flag_var2 = True
+            except:
+                time.sleep(0.001)
+
+            try:
+                locationcoins = pyautogui.locateOnScreen(coins, confidence=0.8)
+                flag_var2 = True
+            except:
+                time.sleep(0.001)
+            
+            #If gem/coin found, click a bunch
+            if flag_var2:
+                if f8_pressed: #Stop macro when gems or coins detected
+                    print("Macro Stopped.")
+                    time.sleep(0.05)
+                    pyautogui.keyDown('f8')
+                    time.sleep(0.1)
+                    pyautogui.keyUp('f8')
+                    f8_pressed = False
+                print("Gems found. Clicking through rewards")
+                pyautogui.moveTo(empty_spot)
+                move_mouse_relative(0, 1)
+                for i in range(8): #Click 8 times
+                    pyautogui.click()
+                    time.sleep(0.6)
+                flag_var2 = False #resets flagvar 2 for rerun
+
+            else:
+                time.sleep(0.2)
+
+            #If rewards detected, macro clicks next level
+            try:
+                locationrewards = pyautogui.locateOnScreen(rewards, confidence=0.8)
+                print("Rewards detected.")
+                if f8_pressed: #Stop macro when gems or coins detected
+                    print("Macro Stopped.")
+                    time.sleep(0.05)
+                    pyautogui.keyDown('f8')
+                    time.sleep(0.2)
+                    pyautogui.keyUp('f8')
+                    f8_pressed = False
+                try: #If failed detected, stop macro
+                    locationfailed = pyautogui.locateOnScreen(failed, confidence=0.8)
+                    flag_var = False
+                    loop_running = False
+                    print("Failed detected, loop ended.")
+                    break
+                except: #If failed not detected, continue to next level
+                    time.sleep(0.001)
+                    pyautogui.moveTo(next_level)
+                    move_mouse_relative(0, 1)
+                    pyautogui.click()
+                    card_searching = True
+                    time.sleep(3)
+            except:
+                time.sleep(0.001)
+
+            try: #test if gojo wrecked the macro
+                locationabilitycancel = pyautogui.locateOnScreen(ability, confidence=0.8)
+                time.sleep(2.5)
+                pyautogui.moveTo(955, 578)
+                move_mouse_relative(0,1)
+                pyautogui.click()
+                time.sleep(0.05)
+                pyautogui.click()
+                time.sleep(0.05)
+                
+            except:
+                time.sleep(0.01)
+
+        if killswitch_pressed:
+            print("Kill switch. Turning off script")
+            loop_running = False
+            break # See I can make a killswitch.... (Took me 5 attempts)
