@@ -22,8 +22,10 @@ image_path_endwisp = r'C:\ImagesForMacro\EndWisp.png'
 image_path_desired = r'C:\ImagesForMacro\Desired.png'
 image_path_wave1 = r'C:\ImagesForMacro\Wave1.png'
 image_path_wave28 = r'C:\ImagesForMacro\Wave28.png'
+image_path_wave50 = r'C:\ImagesForMacro\Wave50.png'
 image_path_ability = r'C:\ImagesForMacro\Ability.png'
 image_path_settings = r'C:\ImagesForMacro\Settings.png'
+image_path_settingsalt = r'C:\ImagesForMacro\Settingsalt.png'
 harvest = r'C:\ImagesForMacro\Harvest.png'
 loot = r'C:\ImagesForMacro\Loot.png'
 commonloot = r'C:\ImagesForMacro\CommonLoot.png'
@@ -59,6 +61,7 @@ time.sleep(0.05)
 print("Script Started: press ; to start the script, and m to stop it")
 
 settings_start_time = None #Fixing a glitch with settings staying open
+wave50_timer = None #wave 50 detection
 
 while flag_var:
     
@@ -230,7 +233,7 @@ while flag_var:
                 time.sleep(0.001)
                 
             try: #Detects if somehow the settings got pulled up unwarranted
-                locationsettingscancel = pyautogui.locateOnScreen(image_path_settings, confidence=0.8)
+                locationsettingscancel = pyautogui.locateOnScreen(image_path_settings, confidence=0.8) or pyautogui.locateOnScreen(image_path_settingsalt, confidence=0.8)
                 if not settings_start_time: #Only triggered if it's 8+ seconds on screen (aka bugged)
                     settings_start_time = time.time()
                 else:
@@ -246,6 +249,34 @@ while flag_var:
             except:
                     settings_start_time = None
 
+            time.sleep(0.001)
+            
+            try: #Uses talisman when wave 50 boss spawns. Ignore the logic if you're proofreading :>
+                locationwave50 = pyautogui.locateOnScreen(image_path_wave50, confidence=0.95)
+                if locationwave50:
+                    if not wave50_timer:
+                        wave50_timer = time.time()
+                    else:
+                        elapsed_time = time.time() - wave50_timer
+                        print(f"Elapsed time since Wave 50: {elapsed_time: .2f} seconds")
+                        if elapsed_time >=4:
+                            print("Wave 50 Detected. Using talisman in 30 seconds")
+                            time.sleep(35)
+                            pyautogui.moveTo(1400, 930)
+                            move_mouse_relative(0,1)
+                            pyautogui.click()
+                            time.sleep(0.05)
+                            pyautogui.click()
+                            wave50_timer = None
+                elif wave50_timer:
+                    print("Wave 50 lost before completing the action. Resetting Timer (Likely Gojo, Sorry...")
+                    wave50_timer = None
+            except Exception as e:
+                    wave50_timer = None
+            
+            time.sleep(0.001)
+            
+            #rewards detection is here.
             if pixel_color == target_col or alternative_pixel_color == alternative_col or retry_flag:
                 if not start_time:
                     start_time = time.time()
